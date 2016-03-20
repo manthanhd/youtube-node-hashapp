@@ -5,7 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// $2a$10$LSCSMAW1ivEpctVZ5iklDeAb3YHs3XVtRUatEQ9Wo.FfHq4x28PSO
+// $2a$10$/n.dGboa8ijmHbP18rytBeF18pHqWVFrXPPZtO469vXd5qiwndMum
+
+var bcrypt = require('bcrypt');
+
+var hashService = require('./services/HashService')(bcrypt);
+
 var indexRoute = require('./routes/IndexRoute')(express);
+var hashRoute = require('./routes/HashRoute')(express, hashService);
 
 var app = express();
 
@@ -22,6 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
+app.use('/hash', hashRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
