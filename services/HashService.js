@@ -1,8 +1,12 @@
 function HashService(bcrypt) {
+    const SALT_WORK_FACTOR = 10;
 
     this.textToHash = function(text, callback) {
+        if(!callback) {
+            throw new Error("Callback to hash service must be defined!");
+        }
         // generate a salt
-        return bcrypt.genSalt(10, function (err, salt) {
+        return bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
             if (err) {
                 console.error(err);
                 return callback(err);
