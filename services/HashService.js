@@ -1,12 +1,16 @@
 function HashService(bcrypt) {
-    const SALT_WORK_FACTOR = 10;
+    const DEFAULT_SALT_WORK_FACTOR = 10;
 
-    this.textToHash = function(text, callback) {
+    this.textToHash = function(text, workFactor, callback) {
+        if(!workFactor) {
+            workFactor = DEFAULT_SALT_WORK_FACTOR;
+        }
+
         if(!callback) {
             throw new Error("Callback to hash service must be defined!");
         }
         // generate a salt
-        return bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+        return bcrypt.genSalt(workFactor, function (err, salt) {
             if (err) {
                 console.error(err);
                 return callback(err);
@@ -19,7 +23,7 @@ function HashService(bcrypt) {
                     return callback(err);
                 }
 
-                return callback(undefined, hash);
+                return callback(undefined, {hash: hash, workFactor: workFactor});
             });
         });
     };
